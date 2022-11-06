@@ -50,15 +50,26 @@ findTheWordGame' foundLetters completeWord alreadyUsedLetters = do
         putStrLn ("The letter \"" ++ [letter] ++"\" is in the word!")
         -- reveal the letters by modifying the foundLetters word
         let newFoundLetters = zipWith createPartialWordWithContext [1..] completeWord
-        findTheWordGame' newFoundLetters completeWord (letter:alreadyUsedLetters)
+        if verifyWin newFoundLetters then do
+            print $ "Congratulations !! You found the word " ++ 
+                    newFoundLetters ++ 
+                    " in " ++ 
+                    show (length alreadyUsedLetters) ++ 
+                    " turns!"
+        else do
+            findTheWordGame' newFoundLetters completeWord (letter:alreadyUsedLetters)
     else 
         findTheWordGame' foundLetters completeWord (letter:alreadyUsedLetters)
 
 createPartialWord :: String -> String -> Char -> Int -> Char -> Char
 createPartialWord completeWord oldPartialWord guessedLetter index letter =
-    if getCharFromString index completeWord == guessedLetter 
-        then letter 
+    if getCharFromString index completeWord == guessedLetter
+        then letter
     else getCharFromString index oldPartialWord
+
+verifyWin :: String -> Bool
+verifyWin [] = True
+verifyWin (x:xs) = if x == '-' then False else verifyWin xs
 
 -- Allow us to get the char at index n of a string
 getCharFromString :: Int -> String -> Char
