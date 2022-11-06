@@ -2,32 +2,34 @@
 {-# HLINT ignore "Redundant if" #-}
 module Actions where
 
+import Types (Difficulty(Easy, Medium, Hard))
+import System.Random
+
 -- Additional IO Actions functions are gonna be here.
 -- verify if the letter is part of the word
-askDifficultyLevel :: IO String
+askDifficultyLevel :: IO Difficulty
 askDifficultyLevel = askDifficultyLevel' False
     
 -- ask the level of difficulty to the user
-askDifficultyLevel' :: Bool -> IO String
+askDifficultyLevel' :: Bool -> IO Difficulty
 askDifficultyLevel' b = do
-        
-        let errorMessage = "Invalid Option. valid options are 1, 2 or 3.\n"
-        let message = "Choose the difficulty level : \n write 1 for easy, 2 for medium, 3 for hard."
-        
-        if b then do
-            putStrLn (errorMessage ++ message)
-        else do
-            putStrLn message
-        
-        diffLevel <- getLine
-        if length diffLevel == 1 then
-            if diffLevel == "1" then do return "easy"
-            else if diffLevel == "2" then do return "medium"
-            else if diffLevel == "3" then do return "hard"
-            else do
-                askDifficultyLevel' True
-        else do
+    let errorMessage = "Invalid Option. valid options are 1, 2 or 3.\n"
+    let message = "Choose the difficulty level : \n write 1 for easy, 2 for medium, 3 for hard."
+    
+    if b then 
+        putStrLn (errorMessage ++ message)
+    else 
+        putStrLn message
+    
+    diffLevel <- getLine
+    if length diffLevel == 1 then
+        if diffLevel == "1" then do return Easy
+        else if diffLevel == "2" then do return Medium
+        else if diffLevel == "3" then do return Hard
+        else
             askDifficultyLevel' True
+    else
+        askDifficultyLevel' True
 
 guessLetter :: IO Char
 guessLetter = do 
@@ -73,6 +75,15 @@ verifyWin :: String -> Bool
 verifyWin [] = True
 verifyWin (x:xs) = if x == '-' then False else verifyWin xs
 
+-- following a certain list of words, create a random number and use it as index for selecting a number in the list
+getRandomWordFromListOfWords :: [String] -> IO String
+getRandomWordFromListOfWords listOfWords = do 
+    randomNumber <- randomRIO (1, length (head listOfWords))
+    getWordFromStringList randomNumber listOfWords
+
 -- Allow us to get the char at index n of a string
 getCharFromString :: Int -> String -> Char
 getCharFromString n word = last (take n word)
+
+getWordFromStringList :: Int -> [String] -> IO String
+getWordFromStringList n wordsList = return $ last (take n wordsList)
