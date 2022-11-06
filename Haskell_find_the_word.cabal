@@ -68,7 +68,8 @@ executable Haskell_find_the_word
     -- other-extensions:
 
     -- Other library packages from which modules are imported.
-    build-depends:    base ^>=4.16.3.0
+    build-depends:    base ^>=4.16.3.0,
+                      containers
 
     -- Directories containing source files.
     hs-source-dirs:   app
