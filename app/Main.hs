@@ -14,17 +14,20 @@ main = do
     -- get the words from the dictionary file
     wordsFile <- readFile "words.txt"
     let wordsList = splitOn "\n" wordsFile 
-    let easyFilterFunc = (\x -> length x < 5) 
-    let mediumFilterFunc = (\x -> length x >= 5 && length x < 10) 
-    let hardFilterFunc = (\x -> length x >= 10) 
+    let easyFilterFunc x = length x < 5 
+    let mediumFilterFunc x = length x >= 5 && length x < 10
+    let hardFilterFunc x = length x >= 10 
     
     -- randomly select a number from the right category
-    let filterWords = (\diff -> if diff == Easy then easyFilterFunc 
-        else if diff == Medium then mediumFilterFunc 
-        else hardFilterFunc)
+    let filterWords diff | diff == Easy = easyFilterFunc 
+                         | diff == Medium = mediumFilterFunc 
+                         | otherwise = hardFilterFunc
     
     wordToFind <- getRandomWordFromListOfWords (filter (filterWords difficulty) wordsList)
 
     putStrLn "A Word has been chosen for you! Lets Play!"
 
     findTheWordGame wordToFind
+
+    -- Add colors 
+    -- add state handling instead of arguments
