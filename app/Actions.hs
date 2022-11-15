@@ -17,20 +17,17 @@ askDifficultyLevel' b = do
     let errorMessage = "Invalid Option. valid options are 1, 2 or 3.\n"
     let message = "Choose the difficulty level : \n write 1 for easy, 2 for medium, 3 for hard."
     
-    if b then 
-        putStrLn (errorMessage ++ message)
-    else 
-        putStrLn message
+    let errorHandling x = if x then errorMessage ++ message else message
+    putStrLn (errorHandling b)
     
     diffLevel <- getLine
-    if length diffLevel == 1 then
-        if diffLevel == "1" then do return Easy
-        else if diffLevel == "2" then do return Medium
-        else if diffLevel == "3" then do return Hard
-        else
-            askDifficultyLevel' True
-    else
-        askDifficultyLevel' True
+
+    case diffLevel of
+        "1" -> return Easy
+        "2" -> return Medium
+        "3" -> return Hard
+        _ -> askDifficultyLevel' True
+        
 
 guessLetter :: IO Char
 guessLetter = do 
