@@ -4,6 +4,7 @@ module Actions where
 
 import Types (Difficulty(Easy, Medium, Hard))
 import System.Random
+import Data.List.Split
 
 -- Additional IO Actions functions are gonna be here.
 -- verify if the letter is part of the word
@@ -87,3 +88,14 @@ getCharFromString n word = last (take n word)
 
 getWordFromStringList :: Int -> [String] -> IO String
 getWordFromStringList n wordsList = return $ last (take n wordsList)
+
+-- get the filter func -- Choosing the words based on the difficulty level
+getFilterFuncFromDiff :: Difficulty -> String -> Bool
+getFilterFuncFromDiff Easy = \x -> length x < 5 
+getFilterFuncFromDiff Medium = \x -> length x >= 5 && length x < 10
+getFilterFuncFromDiff Hard = \x -> length x >= 10 
+
+filterWordsFromDiff :: String -> Difficulty -> IO String
+filterWordsFromDiff wordsPath diff = do
+    wordsFile <- readFile wordsPath
+    getRandomWordFromListOfWords (filter (getFilterFuncFromDiff diff) (splitOn "\n" wordsFile) )
