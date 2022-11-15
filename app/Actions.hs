@@ -33,7 +33,6 @@ guessLetter :: IO Char
 guessLetter = do 
     putStrLn "Enter a letter to guess the word"
     head <$> getLine
-    -- TODO validate length and ask again as long as needed
 
 findTheWordGame :: String -> IO ()
 findTheWordGame wordToFind = findTheWordGame' (map (const '-') wordToFind) wordToFind []
@@ -70,21 +69,20 @@ createPartialWord completeWord oldPartialWord guessedLetter index letter =
     else getCharFromString index oldPartialWord
 
 verifyWin :: String -> Bool
-verifyWin [] = True
-verifyWin (x:xs) = if x == '-' then False else verifyWin xs
+verifyWin word = '-' `notElem` word
 
 -- following a certain list of words, create a random number and use it as index for selecting a number in the list
 getRandomWordFromListOfWords :: [String] -> IO String
 getRandomWordFromListOfWords listOfWords = do 
     randomNumber <- randomRIO (1, length (head listOfWords))
-    getWordFromStringList randomNumber listOfWords
+    return $ getWordFromStringList randomNumber listOfWords
 
 -- Allow us to get the char at index n of a string
 getCharFromString :: Int -> String -> Char
 getCharFromString n word = last (take n word)
 
-getWordFromStringList :: Int -> [String] -> IO String
-getWordFromStringList n wordsList = return $ last (take n wordsList)
+getWordFromStringList :: Int -> [String] -> String
+getWordFromStringList n wordsList = last (take n wordsList)
 
 -- get the filter func -- Choosing the words based on the difficulty level
 getFilterFuncFromDiff :: Difficulty -> String -> Bool
